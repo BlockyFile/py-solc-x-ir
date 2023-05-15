@@ -11,7 +11,7 @@ cd py-solc-x
 python3 -m venv venv
 source venv/bin/activate
 
-# install solcx into the virtual environment
+# install solcxir into the virtual environment
 python setup.py install
 
 # install the developer dependencies

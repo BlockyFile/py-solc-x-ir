@@ -5,8 +5,8 @@ from typing import Any, Dict, List, Tuple, Union
 
 from semantic_version import Version
 
-from solcx import install
-from solcx.exceptions import SolcError, UnknownOption, UnknownValue
+from solcxir import install
+from solcxir.exceptions import SolcError, UnknownOption, UnknownValue
 
 # (major.minor.patch)(nightly)(commit)
 VERSION_REGEX = r"(\d+\.\d+\.\d+)(?:-nightly.\d+.\d+.\d+|)(\+commit.\w+)"
@@ -143,10 +143,12 @@ def solc_wrapper(
     stdoutdata, stderrdata = proc.communicate(stdin)
 
     if proc.returncode != success_return_code:
+        '''
         if stderrdata.startswith("unrecognised option"):
             # unrecognised option '<FLAG>'
             flag = stderrdata.split("'")[1]
             raise UnknownOption(f"solc {solc_version} does not support the '{flag}' option'")
+        '''
         if stderrdata.startswith("Invalid option"):
             # Invalid option to <FLAG>: <OPTION>
             flag, option = stderrdata.split(": ")

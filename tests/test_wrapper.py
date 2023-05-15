@@ -5,8 +5,8 @@ import subprocess
 import pytest
 from semantic_version import Version
 
-import solcx
-from solcx.exceptions import UnknownOption, UnknownValue
+import solcxir
+from solcxir.exceptions import UnknownOption, UnknownValue
 
 
 class PopenPatch:
@@ -17,7 +17,7 @@ class PopenPatch:
     def __call__(self, cmd, **kwargs):
         if cmd[1] == "--version":
             return self.proc(cmd, **kwargs)
-        assert cmd[0] == str(solcx.install.get_executable())
+        assert cmd[0] == str(solcxir.install.get_executable())
         for i in self.args:
             assert i in cmd
         return self.proc(cmd, **kwargs)
@@ -40,7 +40,7 @@ def setup(all_versions):
 
 def test_help(popen):
     popen.expect("help")
-    solcx.wrapper.solc_wrapper(help=True, success_return_code=1)
+    solcxir.wrapper.solc_wrapper(help=True, success_return_code=1)
 
 
 @pytest.mark.parametrize(
@@ -64,7 +64,7 @@ def test_help(popen):
 )
 def test_boolean_kwargs(popen, foo_source, kwarg):
     popen.expect(kwarg)
-    solcx.wrapper.solc_wrapper(stdin=foo_source, **{kwarg: True})
+    solcxir.wrapper.solc_wrapper(stdin=foo_source, **{kwarg: True})
 
 
 @pytest.mark.parametrize(
@@ -73,17 +73,17 @@ def test_boolean_kwargs(popen, foo_source, kwarg):
 )
 def test_removed_kwargs(popen, foo_source, kwarg, min_solc):
     popen.expect(kwarg)
-    if solcx.get_solc_version() >= Version(min_solc):
+    if solcxir.get_solc_version() >= Version(min_solc):
         with pytest.raises(UnknownOption):
-            solcx.wrapper.solc_wrapper(stdin=foo_source, **{kwarg: True})
+            solcxir.wrapper.solc_wrapper(stdin=foo_source, **{kwarg: True})
     else:
-        solcx.wrapper.solc_wrapper(stdin=foo_source, **{kwarg: True})
+        solcxir.wrapper.solc_wrapper(stdin=foo_source, **{kwarg: True})
 
 
 def test_unknown_value(foo_source, all_versions):
     expected = UnknownValue if all_versions >= Version("0.4.21") else UnknownOption
     with pytest.raises(expected):
-        solcx.wrapper.solc_wrapper(stdin=foo_source, evm_version="potato")
+        solcxir.wrapper.solc_wrapper(stdin=foo_source, evm_version="potato")
 
 
 @pytest.mark.parametrize(
@@ -98,4 +98,4 @@ def test_unknown_value(foo_source, all_versions):
 )
 def test_value_kwargs(popen, foo_source, kwarg, value):
     popen.expect(kwarg)
-    solcx.wrapper.solc_wrapper(stdin=foo_source, **{kwarg: value})
+    solcxir.wrapper.solc_wrapper(stdin=foo_source, **{kwarg: value})

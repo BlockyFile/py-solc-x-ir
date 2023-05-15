@@ -21,8 +21,8 @@ from typing import Dict, List, Optional, Union
 import requests
 from semantic_version import SimpleSpec, Version
 
-from solcx import wrapper
-from solcx.exceptions import (
+from solcxir import wrapper
+from solcxir.exceptions import (
     DownloadError,
     SolcInstallationError,
     SolcNotInstalled,
@@ -30,7 +30,7 @@ from solcx.exceptions import (
     UnexpectedVersionWarning,
     UnsupportedVersionError,
 )
-from solcx.utils.lock import get_process_lock
+from solcxir.utils.lock import get_process_lock
 
 try:
     from tqdm import tqdm
@@ -43,9 +43,9 @@ SOURCE_DOWNLOAD_BASE = "https://github.com/ethereum/solidity/releases/download/v
 GITHUB_RELEASES = "https://api.github.com/repos/ethereum/solidity/releases?per_page=100"
 
 MINIMAL_SOLC_VERSION = Version("0.4.11")
-LOGGER = logging.getLogger("solcx")
+LOGGER = logging.getLogger("solcxir")
 
-SOLCX_BINARY_PATH_VARIABLE = "SOLCX_BINARY_PATH"
+solcxir_BINARY_PATH_VARIABLE = "solcxir_BINARY_PATH"
 
 _default_solc_binary = None
 
@@ -76,15 +76,15 @@ def _unlink_solc(solc_path: Path) -> None:
         shutil.rmtree(solc_path.parent)
 
 
-def get_solcx_install_folder(solcx_binary_path: Union[Path, str] = None) -> Path:
+def get_solcx_install_folder(solcxir_binary_path: Union[Path, str] = None) -> Path:
     """
     Return the directory where `py-solc-x` stores installed `solc` binaries.
 
-    By default, this is `~/.solcx`
+    By default, this is `~/.solcxir`
 
     Arguments
     ---------
-    solcx_binary_path : Path | str, optional
+    solcxir_binary_path : Path | str, optional
         User-defined path, used to override the default installation directory.
 
     Returns
@@ -92,12 +92,12 @@ def get_solcx_install_folder(solcx_binary_path: Union[Path, str] = None) -> Path
     Path
         Subdirectory where `solc` binaries are are saved.
     """
-    if os.getenv(SOLCX_BINARY_PATH_VARIABLE):
-        return Path(os.environ[SOLCX_BINARY_PATH_VARIABLE])
-    elif solcx_binary_path is not None:
-        return Path(solcx_binary_path)
+    if os.getenv(solcxir_BINARY_PATH_VARIABLE):
+        return Path(os.environ[solcxir_BINARY_PATH_VARIABLE])
+    elif solcxir_binary_path is not None:
+        return Path(solcxir_binary_path)
     else:
-        path = Path.home().joinpath(".solcx")
+        path = Path.home().joinpath(".solcxir")
         path.mkdir(exist_ok=True)
         return path
 
@@ -112,13 +112,13 @@ def _get_which_solc() -> Path:
     return Path(response)
 
 
-def import_installed_solc(solcx_binary_path: Union[Path, str] = None) -> List[Version]:
+def import_installed_solc(solcxir_binary_path: Union[Path, str] = None) -> List[Version]:
     """
     Search for and copy installed `solc` versions into the local installation folder.
 
     Arguments
     ---------
-    solcx_binary_path : Path | str, optional
+    solcxir_binary_path : Path | str, optional
         User-defined path, used to override the default installation directory.
 
     Returns
@@ -143,7 +143,7 @@ def import_installed_solc(solcx_binary_path: Union[Path, str] = None) -> List[Ve
         except Exception:
             continue
 
-        copy_path = get_solcx_install_folder(solcx_binary_path).joinpath(f"solc-v{version}")
+        copy_path = get_solcx_install_folder(solcxir_binary_path).joinpath(f"solc-v{version}")
         if _get_os_name() == "windows":
             copy_path.mkdir()
             copy_path = copy_path.joinpath("solc.exe")
@@ -160,7 +160,7 @@ def import_installed_solc(solcx_binary_path: Union[Path, str] = None) -> List[Ve
 
 
 def get_executable(
-    version: Union[str, Version] = None, solcx_binary_path: Union[Path, str] = None
+    version: Union[str, Version] = None, solcxir_binary_path: Union[Path, str] = None
 ) -> Path:
     """
     Return the Path to an installed `solc` binary.
@@ -170,7 +170,7 @@ def get_executable(
     version : str | Version, optional
         Installed `solc` version to get the path of. If not given, returns the
         path of the active version.
-    solcx_binary_path : Path | str, optional
+    solcxir_binary_path : Path | str, optional
         User-defined path, used to override the default installation directory.
 
     Returns
@@ -181,25 +181,25 @@ def get_executable(
     if not version:
         if not _default_solc_binary:
             raise SolcNotInstalled(
-                "Solc is not installed. Call solcx.get_installable_solc_versions()"
-                " to view for available versions and solcx.install_solc() to install."
+                "Solc is not installed. Call solcxir.get_installable_solc_versions()"
+                " to view for available versions and solcxir.install_solc() to install."
             )
         return _default_solc_binary
 
     version = _convert_and_validate_version(version)
-    solc_bin = get_solcx_install_folder(solcx_binary_path).joinpath(f"solc-v{version}")
+    solc_bin = get_solcx_install_folder(solcxir_binary_path).joinpath(f"solc-v{version}")
     if _get_os_name() == "windows":
         solc_bin = solc_bin.joinpath("solc.exe")
     if not solc_bin.exists():
         raise SolcNotInstalled(
             f"solc {version} has not been installed."
-            f" Use solcx.install_solc('{version}') to install."
+            f" Use solcxir.install_solc('{version}') to install."
         )
     return solc_bin
 
 
 def set_solc_version(
-    version: Union[str, Version], silent: bool = False, solcx_binary_path: Union[Path, str] = None
+    version: Union[str, Version], silent: bool = False, solcxir_binary_path: Union[Path, str] = None
 ) -> None:
     """
     Set the currently active `solc` binary.
@@ -211,12 +211,12 @@ def set_solc_version(
         path of the active version.
     silent : bool, optional
         If True, do not generate any logger output.
-    solcx_binary_path : Path | str, optional
+    solcxir_binary_path : Path | str, optional
         User-defined path, used to override the default installation directory.
     """
     version = _convert_and_validate_version(version)
     global _default_solc_binary
-    _default_solc_binary = get_executable(version, solcx_binary_path)
+    _default_solc_binary = get_executable(version, solcxir_binary_path)
     if not silent:
         LOGGER.info(f"Using solc version {version}")
 
@@ -263,7 +263,7 @@ def set_solc_version_pragma(
     if version is None:
         raise SolcNotInstalled(
             f"No compatible solc version installed."
-            f" Use solcx.install_solc_version_pragma('{version}') to install."
+            f" Use solcxir.install_solc_version_pragma('{version}') to install."
         )
     set_solc_version(version, silent)
     if check_new:
@@ -278,7 +278,7 @@ def install_solc_pragma(
     pragma_string: str,
     install: bool = True,
     show_progress: bool = False,
-    solcx_binary_path: Union[Path, str] = None,
+    solcxir_binary_path: Union[Path, str] = None,
 ) -> Version:
     """
     Find, and optionally install, the latest compatible `solc` version based on
@@ -293,7 +293,7 @@ def install_solc_pragma(
     show_progress : bool, optional
         If True, display a progress bar while downloading. Requires installing
         the `tqdm` package.
-    solcx_binary_path : Path | str, optional
+    solcxir_binary_path : Path | str, optional
         User-defined path, used to override the default installation directory.
 
     Returns
@@ -305,7 +305,7 @@ def install_solc_pragma(
     if not version:
         raise UnsupportedVersionError("Compatible solc version does not exist")
     if install:
-        install_solc(version, show_progress=show_progress, solcx_binary_path=solcx_binary_path)
+        install_solc(version, show_progress=show_progress, solcxir_binary_path=solcxir_binary_path)
 
     return version
 
@@ -382,13 +382,13 @@ def get_compilable_solc_versions(headers: Optional[Dict] = None) -> List[Version
     return sorted(version_list, reverse=True)
 
 
-def get_installed_solc_versions(solcx_binary_path: Union[Path, str] = None) -> List[Version]:
+def get_installed_solc_versions(solcxir_binary_path: Union[Path, str] = None) -> List[Version]:
     """
     Return a list of currently installed `solc` versions.
 
     Arguments
     ---------
-    solcx_binary_path : Path | str, optional
+    solcxir_binary_path : Path | str, optional
         User-defined path, used to override the default installation directory.
 
     Returns
@@ -396,14 +396,14 @@ def get_installed_solc_versions(solcx_binary_path: Union[Path, str] = None) -> L
     List
         List of Version objects of installed `solc` versions.
     """
-    install_path = get_solcx_install_folder(solcx_binary_path)
+    install_path = get_solcx_install_folder(solcxir_binary_path)
     return sorted([Version(i.name[6:]) for i in install_path.glob("solc-v*")], reverse=True)
 
 
 def install_solc(
     version: Union[str, Version] = "latest",
     show_progress: bool = False,
-    solcx_binary_path: Union[Path, str] = None,
+    solcxir_binary_path: Union[Path, str] = None,
 ) -> Version:
     """
     Download and install a precompiled version of `solc`.
@@ -415,7 +415,7 @@ def install_solc(
     show_progress : bool, optional
         If True, display a progress bar while downloading. Requires installing
         the `tqdm` package.
-    solcx_binary_path : Path | str, optional
+    solcxir_binary_path : Path | str, optional
         User-defined path, used to override the default installation directory.
 
     Returns
@@ -433,8 +433,8 @@ def install_solc(
     process_lock = get_process_lock(str(version))
 
     with process_lock:
-        if _check_for_installed_version(version, solcx_binary_path):
-            path = get_solcx_install_folder(solcx_binary_path).joinpath(f"solc-v{version}")
+        if _check_for_installed_version(version, solcxir_binary_path):
+            path = get_solcx_install_folder(solcxir_binary_path).joinpath(f"solc-v{version}")
             LOGGER.info(f"solc {version} already installed at: {path}")
             return version
 
@@ -449,19 +449,19 @@ def install_solc(
             raise SolcInstallationError(f"Solc binary for v{version} is not available for this OS")
 
         if os_name == "linux":
-            _install_solc_unix(version, filename, show_progress, solcx_binary_path)
+            _install_solc_unix(version, filename, show_progress, solcxir_binary_path)
         elif os_name == "macosx":
-            _install_solc_unix(version, filename, show_progress, solcx_binary_path)
+            _install_solc_unix(version, filename, show_progress, solcxir_binary_path)
         elif os_name == "windows":
-            _install_solc_windows(version, filename, show_progress, solcx_binary_path)
+            _install_solc_windows(version, filename, show_progress, solcxir_binary_path)
 
         try:
-            _validate_installation(version, solcx_binary_path)
+            _validate_installation(version, solcxir_binary_path)
         except SolcInstallationError as exc:
             if os_name != "windows":
                 exc.args = (
                     f"{exc.args[0]} If this issue persists, you can try to compile from "
-                    f"source code using `solcx.compile_solc('{version}')`.",
+                    f"source code using `solcxir.compile_solc('{version}')`.",
                 )
             raise exc
 
@@ -469,7 +469,7 @@ def install_solc(
 
 
 def compile_solc(
-    version: Version, show_progress: bool = False, solcx_binary_path: Union[Path, str] = None
+    version: Version, show_progress: bool = False, solcxir_binary_path: Union[Path, str] = None
 ) -> Version:
     """
     Install a version of `solc` by downloading and compiling source code.
@@ -481,7 +481,7 @@ def compile_solc(
     show_progress : bool, optional
         If True, display a progress bar while downloading. Requires installing
         the `tqdm` package.
-    solcx_binary_path : Path | str, optional
+    solcxir_binary_path : Path | str, optional
         User-defined path, used to override the default installation directory.
 
     Returns
@@ -500,14 +500,14 @@ def compile_solc(
     process_lock = get_process_lock(str(version))
 
     with process_lock:
-        if _check_for_installed_version(version, solcx_binary_path):
-            path = get_solcx_install_folder(solcx_binary_path).joinpath(f"solc-v{version}")
+        if _check_for_installed_version(version, solcxir_binary_path):
+            path = get_solcx_install_folder(solcxir_binary_path).joinpath(f"solc-v{version}")
             LOGGER.info(f"solc {version} already installed at: {path}")
             return version
 
         temp_path = _get_temp_folder()
         download = SOURCE_DOWNLOAD_BASE.format(version, f"solidity_{version}.tar.gz")
-        install_path = get_solcx_install_folder(solcx_binary_path).joinpath(f"solc-v{version}")
+        install_path = get_solcx_install_folder(solcxir_binary_path).joinpath(f"solc-v{version}")
 
         content = _download_solc(download, show_progress)
         with tarfile.open(fileobj=BytesIO(content)) as tar:
@@ -547,20 +547,20 @@ def compile_solc(
             os.chdir(original_path)
 
         install_path.chmod(install_path.stat().st_mode | stat.S_IEXEC)
-        _validate_installation(version, solcx_binary_path)
+        _validate_installation(version, solcxir_binary_path)
 
     return version
 
 
 def _check_for_installed_version(
-    version: Version, solcx_binary_path: Union[Path, str] = None
+    version: Version, solcxir_binary_path: Union[Path, str] = None
 ) -> bool:
-    path = get_solcx_install_folder(solcx_binary_path).joinpath(f"solc-v{version}")
+    path = get_solcx_install_folder(solcxir_binary_path).joinpath(f"solc-v{version}")
     return path.exists()
 
 
 def _get_temp_folder() -> Path:
-    path = Path(tempfile.gettempdir()).joinpath(f"solcx-tmp-{os.getpid()}")
+    path = Path(tempfile.gettempdir()).joinpath(f"solcxir-tmp-{os.getpid()}")
     if path.exists():
         shutil.rmtree(str(path))
     path.mkdir()
@@ -595,10 +595,10 @@ def _download_solc(url: str, show_progress: bool) -> bytes:
 
 
 def _install_solc_unix(
-    version: Version, filename: str, show_progress: bool, solcx_binary_path: Union[Path, str, None]
+    version: Version, filename: str, show_progress: bool, solcxir_binary_path: Union[Path, str, None]
 ) -> None:
     download = BINARY_DOWNLOAD_BASE.format(_get_os_name(), filename)
-    install_path = get_solcx_install_folder(solcx_binary_path).joinpath(f"solc-v{version}")
+    install_path = get_solcx_install_folder(solcxir_binary_path).joinpath(f"solc-v{version}")
 
     content = _download_solc(download, show_progress)
     with open(install_path, "wb") as fp:
@@ -608,10 +608,10 @@ def _install_solc_unix(
 
 
 def _install_solc_windows(
-    version: Version, filename: str, show_progress: bool, solcx_binary_path: Union[Path, str, None]
+    version: Version, filename: str, show_progress: bool, solcxir_binary_path: Union[Path, str, None]
 ) -> None:
     download = BINARY_DOWNLOAD_BASE.format(_get_os_name(), filename)
-    install_path = get_solcx_install_folder(solcx_binary_path).joinpath(f"solc-v{version}")
+    install_path = get_solcx_install_folder(solcxir_binary_path).joinpath(f"solc-v{version}")
 
     temp_path = _get_temp_folder()
     content = _download_solc(download, show_progress)
@@ -627,8 +627,8 @@ def _install_solc_windows(
             temp_path.rename(install_path)
 
 
-def _validate_installation(version: Version, solcx_binary_path: Union[Path, str, None]) -> None:
-    binary_path = get_executable(version, solcx_binary_path)
+def _validate_installation(version: Version, solcxir_binary_path: Union[Path, str, None]) -> None:
+    binary_path = get_executable(version, solcxir_binary_path)
     try:
         installed_version = wrapper._get_solc_version(binary_path)
     except Exception:
@@ -652,7 +652,7 @@ try:
     # try to set the result of `which`/`where` as the default
     _default_solc_binary = _get_which_solc()
 except Exception:
-    # if not available, use the most recent solcx installed version
+    # if not available, use the most recent solcxir installed version
     if get_installed_solc_versions():
         set_solc_version(get_installed_solc_versions()[0], silent=True)
 
@@ -660,6 +660,6 @@ except Exception:
 if __name__ == "__main__":
     argument_parser = argparse.ArgumentParser()
     argument_parser.add_argument("version")
-    argument_parser.add_argument("--solcx-binary-path", default=None)
+    argument_parser.add_argument("--solcxir-binary-path", default=None)
     args = argument_parser.parse_args()
-    install_solc(args.version, solcx_binary_path=args.solcx_binary_path)
+    install_solc(args.version, solcxir_binary_path=args.solcxir_binary_path)

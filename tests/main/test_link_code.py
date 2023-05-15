@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-import solcx
+import solcxir
 
 source = """pragma solidity >=0.4.11;
 library UnlinkedLib {
@@ -32,7 +32,7 @@ addr2 = "0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"
 
 @pytest.fixture
 def bytecode(all_versions):
-    yield solcx.compile_source(source)["<stdin>:LinkTester"]["bin"]
+    yield solcxir.compile_source(source)["<stdin>:LinkTester"]["bin"]
 
 
 def test_unlinked_bytecode(bytecode):
@@ -42,7 +42,7 @@ def test_unlinked_bytecode(bytecode):
 
 
 def test_partial_link(bytecode):
-    output = solcx.link_code(bytecode, {"<stdin>:UnlinkedLib": addr1})
+    output = solcxir.link_code(bytecode, {"<stdin>:UnlinkedLib": addr1})
 
     assert output != bytecode
     assert "_" in output
@@ -50,7 +50,7 @@ def test_partial_link(bytecode):
 
 
 def test_full_link(bytecode):
-    output = solcx.link_code(
+    output = solcxir.link_code(
         bytecode, {"<stdin>:UnlinkedLib": addr1, "<stdin>:OtherUnlinkedLib": addr2}
     )
 
@@ -63,10 +63,10 @@ def test_full_link(bytecode):
 
 def test_solc_binary(wrapper_mock):
     wrapper_mock.expect(solc_binary=Path("path/to/solc"))
-    solcx.link_code("0x00", {}, solc_binary=Path("path/to/solc"))
+    solcxir.link_code("0x00", {}, solc_binary=Path("path/to/solc"))
 
 
 def test_solc_version(wrapper_mock, all_versions):
-    solc_binary = solcx.install.get_executable(all_versions)
+    solc_binary = solcxir.install.get_executable(all_versions)
     wrapper_mock.expect(solc_binary=solc_binary)
-    solcx.link_code("0x00", {}, solc_version=all_versions)
+    solcxir.link_code("0x00", {}, solc_version=all_versions)

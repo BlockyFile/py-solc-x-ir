@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 from semantic_version import Version
 
-import solcx
-from solcx.install import _download_solc
+import solcxir
+from solcxir.install import _download_solc
 
 
 @pytest.fixture(scope="session")
@@ -16,8 +16,8 @@ def solc_binary():
     """
     Yields the path to the most recent solc binary.
     """
-    version = solcx.get_installed_solc_versions()[0]
-    yield solcx.install.get_executable(version)
+    version = solcxir.get_installed_solc_versions()[0]
+    yield solcxir.install.get_executable(version)
 
 
 @pytest.fixture
@@ -27,8 +27,8 @@ def nosolc(tmp_path, monkeypatch):
 
     Yields the temporary install folder.
     """
-    monkeypatch.setattr("solcx.install.get_solcx_install_folder", lambda *args: tmp_path)
-    monkeypatch.setattr("solcx.install._default_solc_binary", None)
+    monkeypatch.setattr("solcxir.install.get_solcx_install_folder", lambda *args: tmp_path)
+    monkeypatch.setattr("solcxir.install._default_solc_binary", None)
     yield tmp_path
 
 
@@ -55,8 +55,8 @@ def install_mock(monkeypatch, install_path, solc_binary):
         else:
             shutil.copy(solc_binary, install_path)
 
-    monkeypatch.setattr("solcx.install._install_solc_unix", _mock)
-    monkeypatch.setattr("solcx.install._install_solc_windows", _mock)
+    monkeypatch.setattr("solcxir.install._install_solc_unix", _mock)
+    monkeypatch.setattr("solcxir.install._install_solc_windows", _mock)
 
 
 class CompileMock:
@@ -97,7 +97,7 @@ def compile_mock(monkeypatch, nosolc, solc_binary):
     """
     mock = CompileMock(solc_binary)
     monkeypatch.setattr("subprocess.check_call", mock)
-    monkeypatch.setattr("solcx.install._download_solc", mock.download)
+    monkeypatch.setattr("solcxir.install._download_solc", mock.download)
     yield mock
 
 
@@ -118,7 +118,7 @@ def pragmapatch(monkeypatch):
     `install_solc_pragma` and `set_pragma`
     """
     monkeypatch.setattr(
-        "solcx.install.get_installed_solc_versions",
+        "solcxir.install.get_installed_solc_versions",
         lambda: [
             Version("0.4.2"),
             Version("0.4.11"),
@@ -130,7 +130,7 @@ def pragmapatch(monkeypatch):
         ],
     )
     monkeypatch.setattr(
-        "solcx.install.get_installable_solc_versions",
+        "solcxir.install.get_installable_solc_versions",
         lambda: [
             Version("0.4.11"),
             Version("0.4.24"),
@@ -139,4 +139,4 @@ def pragmapatch(monkeypatch):
             Version("0.6.0"),
         ],
     )
-    monkeypatch.setattr("solcx.install.set_solc_version", lambda *args: None)
+    monkeypatch.setattr("solcxir.install.set_solc_version", lambda *args: None)

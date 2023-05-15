@@ -4,7 +4,7 @@ import pytest
 from requests import ConnectionError
 from semantic_version import Version
 
-import solcx
+import solcxir
 
 _installed: dict = {}
 
@@ -13,7 +13,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--no-install",
         action="store_true",
-        help="Only run solcx tests against already installed solc versions",
+        help="Only run solcxir tests against already installed solc versions",
     )
     parser.addoption(
         "--solc-versions",
@@ -31,17 +31,17 @@ def pytest_collection(session):
     if session.config.getoption("--solc-versions"):
         VERSIONS = [Version(i) for i in session.config.getoption("--solc-versions").split(",")]
     elif session.config.getoption("--no-install"):
-        VERSIONS = solcx.get_installed_solc_versions()
+        VERSIONS = solcxir.get_installed_solc_versions()
     else:
         try:
-            VERSIONS = solcx.get_installable_solc_versions()
+            VERSIONS = solcxir.get_installable_solc_versions()
         except ConnectionError:
             raise pytest.UsageError(
                 "ConnectionError while attempting to get solc versions.\n"
                 "Use the --no-install flag to only run tests against already installed versions."
             )
         for version in VERSIONS:
-            solcx.install_solc(version)
+            solcxir.install_solc(version)
 
 
 # auto-parametrize the all_versions fixture with all target solc versions
@@ -59,7 +59,7 @@ def all_versions(request):
     Run a test against all solc versions.
     """
     version = request.param
-    solcx.set_solc_version(version)
+    solcxir.set_solc_version(version)
     return version
 
 

@@ -4,9 +4,9 @@ from typing import Any, Dict, List, Optional, Union
 
 from semantic_version import Version
 
-from solcx import wrapper
-from solcx.exceptions import ContractsNotFound, SolcError
-from solcx.install import get_executable
+from solcxir import wrapper
+from solcxir.exceptions import ContractsNotFound, SolcError
+from solcxir.install import get_executable
 
 
 def get_solc_version(with_commit_hash: bool = False) -> Version:
@@ -40,6 +40,7 @@ def compile_source(
     metadata_hash: str = None,
     metadata_literal: bool = False,
     optimize: bool = False,
+    via_ir: bool = False,
     optimize_runs: int = None,
     optimize_yul: bool = False,
     no_optimize_yul: bool = False,
@@ -97,7 +98,7 @@ def compile_source(
         instead of the built-in one.
     solc_binary : str | Path, optional
         Path of the `solc` binary to use. If not given, the currently active
-        version is used (as set by `solcx.set_solc_version`)
+        version is used (as set by `solcxir.set_solc_version`)
     solc_version: Version, optional
         `solc` version to use. If not given, the currently active version is used.
         Ignored if `solc_binary` is also given.
@@ -124,6 +125,7 @@ def compile_source(
         metadata_hash=metadata_hash,
         metadata_literal=metadata_literal,
         optimize=optimize,
+        via_ir=via_ir,
         optimize_runs=optimize_runs,
         no_optimize_yul=no_optimize_yul,
         yul_optimizations=yul_optimizations,
@@ -144,6 +146,7 @@ def compile_files(
     metadata_hash: str = None,
     metadata_literal: bool = False,
     optimize: bool = False,
+    via_ir: bool = False,
     optimize_runs: int = None,
     optimize_yul: bool = False,
     no_optimize_yul: bool = False,
@@ -184,6 +187,8 @@ def compile_files(
         information.
     metadata_hash : str, optional
         Choose hash method for the bytecode metadata or disable it.
+    via_ir : bool, optional
+        Fa funzionare il codice LOL.
     metadata_literal : bool, optional
         Store referenced sources as literal data in the metadata output.
     optimize : bool, optional
@@ -201,7 +206,7 @@ def compile_files(
         instead of the built-in one.
     solc_binary : str | Path, optional
         Path of the `solc` binary to use. If not given, the currently active
-        version is used (as set by `solcx.set_solc_version`)
+        version is used (as set by `solcxir.set_solc_version`)
     solc_version: Version, optional
         `solc` version to use. If not given, the currently active version is used.
         Ignored if `solc_binary` is also given.
@@ -228,6 +233,7 @@ def compile_files(
         metadata_hash=metadata_hash,
         metadata_literal=metadata_literal,
         optimize=optimize,
+        via_ir=via_ir,
         optimize_runs=optimize_runs,
         no_optimize_yul=no_optimize_yul,
         yul_optimizations=yul_optimizations,
@@ -349,7 +355,7 @@ def compile_standard(
         Overwrite existing files (used in combination with `output_dir`)
     solc_binary : str | Path, optional
         Path of the `solc` binary to use. If not given, the currently active
-        version is used (as set by `solcx.set_solc_version`)
+        version is used (as set by `solcxir.set_solc_version`)
     solc_version: Version, optional
         `solc` version to use. If not given, the currently active version is used.
         Ignored if `solc_binary` is also given.
@@ -420,7 +426,7 @@ def link_code(
         Library addresses given as {"library name": "address"}
     solc_binary : str | Path, optional
         Path of the `solc` binary to use. If not given, the currently active
-        version is used (as set by `solcx.set_solc_version`)
+        version is used (as set by `solcxir.set_solc_version`)
     solc_version: Version, optional
         `solc` version to use. If not given, the currently active version is used.
         Ignored if `solc_binary` is also given.

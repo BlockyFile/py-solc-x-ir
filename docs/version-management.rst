@@ -5,18 +5,18 @@ Solidity Version Management
 Installation Folder
 ===================
 
-By default, ``solc`` versions are installed at ``~/.solcx/``. Each installed version is named using the following pattern: ``solc-v[MAJOR].[MINOR].[PATH]``
+By default, ``solc`` versions are installed at ``~/.solcxir/``. Each installed version is named using the following pattern: ``solc-v[MAJOR].[MINOR].[PATH]``
 
-If you wish to install to a different directory you can specify it with the ``SOLCX_BINARY_PATH`` environment variable. You can also give a custom directory to most installation functions using the optional ``solcx_binary_path`` keyword argument.
+If you wish to install to a different directory you can specify it with the ``solcxir_BINARY_PATH`` environment variable. You can also give a custom directory to most installation functions using the optional ``solcxir_binary_path`` keyword argument.
 
-.. py:function:: solcx.get_solcx_install_folder(solcx_binary_path=None)
+.. py:function:: solcxir.get_solcxir_install_folder(solcxir_binary_path=None)
 
     Return the directory where py-solc-x stores installed ``solc`` binaries.
 
     .. code-block:: python
 
-        >>> solcx.get_solcx_install_folder()
-        PosixPath('/home/computer/.solcx')
+        >>> solcxir.get_solcxir_install_folder()
+        PosixPath('/home/computer/.solcxir')
 
 Getting and Setting the Active Version
 ======================================
@@ -29,7 +29,7 @@ Getting the Active Version
 
 Use the following methods to check the active ``solc`` version:
 
-.. py:function:: solcx.get_solc_version(with_commit_hash=False)
+.. py:function:: solcxir.get_solc_version(with_commit_hash=False)
 
     Return the version of the current active ``solc`` binary, as a :py:class:`Version <semantic_version.Version>` object.
 
@@ -37,14 +37,14 @@ Use the following methods to check the active ``solc`` version:
 
     .. code-block:: python
 
-        >>> solcx.get_solc_version()
+        >>> solcxir.get_solc_version()
         Version('0.7.0')
 
-        >>> solcx.get_solc_version(True)
+        >>> solcxir.get_solc_version(True)
         Version('0.7.0+commit.9e61f92b')
 
 
-.. py:function:: solcx.install.get_executable(version=None, solcx_binary_path=None)
+.. py:function:: solcxir.install.get_executable(version=None, solcxir_binary_path=None)
 
     Return a :py:class:`Path <pathlib.PurePath>` object for a ``solc`` binary.
 
@@ -54,30 +54,30 @@ Use the following methods to check the active ``solc`` version:
 
     .. code-block:: python
 
-        >>> solcx.install.get_executable()
+        >>> solcxir.install.get_executable()
         PosixPath('/usr/bin/solc')
 
-.. py:function:: solcx.get_installed_solc_versions(solcx_binary_path=None)
+.. py:function:: solcxir.get_installed_solc_versions(solcxir_binary_path=None)
 
     Return a list of currently installed ``solc`` versions.
 
     .. code-block:: python
 
-        >>> solcx.get_installed_solc_versions()
+        >>> solcxir.get_installed_solc_versions()
         [Version('0.7.0'), Version('0.6.8'), Version('0.6.3'), Version('0.5.7'), Version('0.4.25')]
 
 Setting the Active Version
 --------------------------
 
-.. py:function:: solcx.set_solc_version(version, silent=False, solcx_binary_path=None)
+.. py:function:: solcxir.set_solc_version(version, silent=False, solcxir_binary_path=None)
 
     Set the currently active ``solc`` version.
 
     .. code-block:: python
 
-        >>> solcx.set_solc_version('0.5.0')
+        >>> solcxir.set_solc_version('0.5.0')
 
-.. py:function:: solcx.set_solc_version_pragma(pragma_string, silent=False, check_new=False)
+.. py:function:: solcxir.set_solc_version_pragma(pragma_string, silent=False, check_new=False)
 
     Set the currently active ``solc`` binary based on a pragma statement.
 
@@ -85,14 +85,14 @@ Setting the Active Version
 
     .. code-block:: python
 
-        >>> solcx.set_solc_version_pragma('pragma solidity ^0.5.0;')
+        >>> solcxir.set_solc_version_pragma('pragma solidity ^0.5.0;')
         Version('0.5.17')
 
 
 Importing Already-Installed Versions
 ====================================
 
-.. py:function:: solcx.import_installed_solc(solcx_binary_path=None)
+.. py:function:: solcxir.import_installed_solc(solcxir_binary_path=None)
 
     Search for and copy installed ``solc`` versions into the local installation folder.
 
@@ -100,7 +100,7 @@ Importing Already-Installed Versions
 
     .. code-block:: python
 
-        >>> solcx.import_installed_solc()
+        >>> solcxir.import_installed_solc()
         [Version('0.7.0'), Version('0.6.12')]
 
 
@@ -112,20 +112,20 @@ py-solc-x downloads and installs precompiled binaries from `solc-bin.ethereum.or
 Getting Installable Versions
 ----------------------------
 
-.. py:function:: solcx.get_installable_solc_versions()
+.. py:function:: solcxir.get_installable_solc_versions()
 
     Return a list of all ``solc`` versions that can be installed by py-solc-x.
 
 
     .. code-block:: python
 
-        >>> solcx.get_installable_solc_versions()
+        >>> solcxir.get_installable_solc_versions()
         [Version('0.7.0'), Version('0.6.12'), Version('0.6.11'), Version('0.6.10'), Version('0.6.9'), Version('0.6.8'), Version('0.6.7'), Version('0.6.6'), Version('0.6.5'), Version('0.6.4'), Version('0.6.3'), Version('0.6.2'), Version('0.6.1'), Version('0.6.0'), Version('0.5.17'), Version('0.5.16'), Version('0.5.15'), Version('0.5.14'), Version('0.5.13'), Version('0.5.12'), Version('0.5.11'), Version('0.5.10'), Version('0.5.9'), Version('0.5.8'), Version('0.5.7'), Version('0.5.6'), Version('0.5.5'), Version('0.5.4'), Version('0.5.3'), Version('0.5.2'), Version('0.5.1'), Version('0.5.0'), Version('0.4.26'), Version('0.4.25'), Version('0.4.24'), Version('0.4.23'), Version('0.4.22'), Version('0.4.21'), Version('0.4.20'), Version('0.4.19'), Version('0.4.18'), Version('0.4.17'), Version('0.4.16'), Version('0.4.15'), Version('0.4.14'), Version('0.4.13'), Version('0.4.12'), Version('0.4.11')]
 
 Installing Precompiled Binaries
 -------------------------------
 
-.. py:function:: solcx.install_solc(version="latest", show_progress=False, solcx_binary_path=None)
+.. py:function:: solcxir.install_solc(version="latest", show_progress=False, solcxir_binary_path=None)
 
     Download and install a precompiled ``solc`` binary.
 
@@ -134,7 +134,7 @@ Installing Precompiled Binaries
         ``show_progress`` bool
             If ``True``, display a progress bar while downloading. Requires installing
             the `tqdm <https://github.com/tqdm/tqdm>`_ package.
-        ``solcx_binary_path`` Path | str
+        ``solcxir_binary_path`` Path | str
             User-defined path, used to override the default installation directory.
 
 Building from Source
@@ -150,7 +150,7 @@ When a precompiled version of Solidity isn't available for your operating system
 Getting Compilable Versions
 ---------------------------
 
-.. py:function:: solcx.get_compilable_solc_versions(headers=None)
+.. py:function:: solcxir.get_compilable_solc_versions(headers=None)
 
     Return a list of all ``solc`` versions that can be installed by py-solc-x.
 
@@ -159,14 +159,14 @@ Getting Compilable Versions
 
     .. code-block:: python
 
-        >>> solcx.get_compilable_solc_versions()
+        >>> solcxir.get_compilable_solc_versions()
         [Version('0.7.0'), Version('0.6.12'), Version('0.6.11'), Version('0.6.10'), Version('0.6.9'), Version('0.6.8'), Version('0.6.7'), Version('0.6.6'), Version('0.6.5'), Version('0.6.4'), Version('0.6.3'), Version('0.6.2'), Version('0.6.1'), Version('0.6.0'), Version('0.5.17'), Version('0.5.16'), Version('0.5.15'), Version('0.5.14'), Version('0.5.13'), Version('0.5.12'), Version('0.5.11'), Version('0.5.10'), Version('0.5.9'), Version('0.5.8'), Version('0.5.7'), Version('0.5.6'), Version('0.5.5'), Version('0.5.4'), Version('0.5.3'), Version('0.5.2'), Version('0.5.1'), Version('0.5.0'), Version('0.4.26'), Version('0.4.25'), Version('0.4.24'), Version('0.4.23'), Version('0.4.22'), Version('0.4.21'), Version('0.4.20'), Version('0.4.19'), Version('0.4.18'), Version('0.4.17'), Version('0.4.16'), Version('0.4.15'), Version('0.4.14'), Version('0.4.13'), Version('0.4.12'), Version('0.4.11')]
 
 
 Compiling Solidity from Source
 ------------------------------
 
-.. py:function:: solcx.compile_solc(version, show_progress=False, solcx_binary_path=None)
+.. py:function:: solcxir.compile_solc(version, show_progress=False, solcxir_binary_path=None)
 
     Install a version of ``solc`` by downloading and compiling source code.
 
@@ -179,5 +179,5 @@ Compiling Solidity from Source
         ``show_progress`` bool
             If ``True``, display a progress bar while downloading. Requires installing
             the `tqdm <https://github.com/tqdm/tqdm>`_ package.
-        ``solcx_binary_path`` Path | str
+        ``solcxir_binary_path`` Path | str
             User-defined path, used to override the default installation directory.

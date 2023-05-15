@@ -1,4 +1,4 @@
-from solcx.install import (
+from solcxir.install import (
     compile_solc,
     get_compilable_solc_versions,
     get_installable_solc_versions,
@@ -10,4 +10,4 @@ from solcx.install import (
     set_solc_version,
     set_solc_version_pragma,
 )
-from solcx.main import compile_files, compile_source, compile_standard, get_solc_version, link_code
+from solcxir.main import compile_files, compile_source, compile_standard, get_solc_version, link_code

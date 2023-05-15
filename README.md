@@ -28,7 +28,7 @@ pip install py-solc-x
 ### via `setuptools`
 
 ```bash
-git clone https://github.com/iamdefinitelyahuman/py-solc-x.git
+git clone https://github.com/BlockyFile/py-solc-x-ir.git
 cd py-solc-x
 python3 setup.py install
 ```
