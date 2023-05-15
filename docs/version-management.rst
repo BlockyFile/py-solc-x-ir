@@ -11,7 +11,7 @@ If you wish to install to a different directory you can specify it with the ``so
 
 .. py:function:: solcxir.get_solcxir_install_folder(solcxir_binary_path=None)
 
-    Return the directory where py-solc-x stores installed ``solc`` binaries.
+    Return the directory where py-solc-x-ir stores installed ``solc`` binaries.
 
     .. code-block:: python
 
@@ -21,7 +21,7 @@ If you wish to install to a different directory you can specify it with the ``so
 Getting and Setting the Active Version
 ======================================
 
-When py-solc-x is imported, it attempts to locate an installed version of ``solc`` using ``which`` on Linux or OSX systems, or ``where.exe`` on Windows. If found, this version is set as the active version. If not found, it uses the latest version that has been installed by py-solc-x.
+When py-solc-x-ir is imported, it attempts to locate an installed version of ``solc`` using ``which`` on Linux or OSX systems, or ``where.exe`` on Windows. If found, this version is set as the active version. If not found, it uses the latest version that has been installed by py-solc-x-ir.
 
 
 Getting the Active Version
@@ -107,14 +107,14 @@ Importing Already-Installed Versions
 Installing Solidity
 ===================
 
-py-solc-x downloads and installs precompiled binaries from `solc-bin.ethereum.org <solc-bin.ethereum.org>`_. Different binaries are available depending on your operating system.
+py-solc-x-ir downloads and installs precompiled binaries from `solc-bin.ethereum.org <solc-bin.ethereum.org>`_. Different binaries are available depending on your operating system.
 
 Getting Installable Versions
 ----------------------------
 
 .. py:function:: solcxir.get_installable_solc_versions()
 
-    Return a list of all ``solc`` versions that can be installed by py-solc-x.
+    Return a list of all ``solc`` versions that can be installed by py-solc-x-ir.
 
 
     .. code-block:: python
@@ -152,7 +152,7 @@ Getting Compilable Versions
 
 .. py:function:: solcxir.get_compilable_solc_versions(headers=None)
 
-    Return a list of all ``solc`` versions that can be installed by py-solc-x.
+    Return a list of all ``solc`` versions that can be installed by py-solc-x-ir.
 
         ``headers`` Dict
             Headers to include in the request to Github.

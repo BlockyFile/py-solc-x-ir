@@ -1,5 +1,5 @@
 =========
-py-solc-x
+py-solc-x-ir
 =========
 
 Python wrapper and version management tool for the ``solc`` `Solidity <https://github.com/ethereum/solidity>`_ compiler.
@@ -14,9 +14,9 @@ Features
 Credit
 ======
 
-`py-solc-x <https://github.com/iamdefinitelyahuman/py-solc-x>`_ is forked from `py-solc <https://github.com/ethereum/py-solc>`_ which was written by `Piper Merriam <https://github.com/pipermerriam>`_.
+`py-solc-x-ir <https://github.com/BlockyFile/py-solc-x-ir>`_ is forked from `py-solc <https://github.com/ethereum/py-solc>`_ which was written by `Piper Merriam <https://github.com/pipermerriam>`_.
 
 Dependencies
 ============
 
-Py-solc-x allows the use of multiple versions of solc, and can install or compile them as needed. If you wish to compile from source you must first install the required `solc dependencies <https://solidity.readthedocs.io/en/latest/installing-solidity.html#building-from-source>`_.
+py-solc-x-ir allows the use of multiple versions of solc, and can install or compile them as needed. If you wish to compile from source you must first install the required `solc dependencies <https://solidity.readthedocs.io/en/latest/installing-solidity.html#building-from-source>`_.

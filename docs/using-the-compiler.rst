@@ -4,7 +4,7 @@
 Using the Compiler
 ==================
 
-py-solc-x provides several functions that you can use to interact with the ``solc`` compiler.
+py-solc-x-ir provides several functions that you can use to interact with the ``solc`` compiler.
 
 Compiling a Source String
 =========================
@@ -37,7 +37,7 @@ Compiling a Source String
         ``source`` str
             Solidity contract to be compiled.
 
-    **Optional py-solc-x Arguments**
+    **Optional py-solc-x-ir Arguments**
 
         ``solc_binary`` str | Path
             Path of the ``solc`` binary to use. May be given as a string or :py:class:`Path <pathlib.PurePath>` object. If not given, the currently active version is used (as set by :func:`solcxir.set_solc_version <solcxir.set_solc_version>`)
@@ -119,7 +119,7 @@ Compiling Files
         ``source_files`` List | Path | str
             Solidity source file, or list of source files, to be compiled. Files may be given as strings or :py:class:`Path <pathlib.PurePath>` objects.
 
-    **Optional py-solc-x Arguments**
+    **Optional py-solc-x-ir Arguments**
 
         ``solc_binary`` str | Path
             Path of the ``solc`` binary to use. May be given as a string or :py:class:`Path <pathlib.PurePath>` object. If not given, the currently active version is used (as set by :func:`solcxir.set_solc_version <solcxir.set_solc_version>`)
@@ -184,7 +184,7 @@ Compiling with the Standard JSON Format
         ``input_data`` Dict
             Compiler JSON input.
 
-    **Optional py-solc-x Arguments**
+    **Optional py-solc-x-ir Arguments**
 
         ``solc_binary`` str | Path
             Path of the ``solc`` binary to use. May be given as a string or :py:class:`Path <pathlib.PurePath>` object. If not given, the currently active version is used (as set by :func:`solcxir.set_solc_version <solcxir.set_solc_version>`)
@@ -237,7 +237,7 @@ Linking Libraries
         ``libraries`` Dict
             Library addresses given as ``{"library name": "address"}``
 
-    **Optional py-solc-x Arguments**
+    **Optional py-solc-x-ir Arguments**
 
         ``solc_binary`` str | Path
             Path of the ``solc`` binary to use. May be given as a string or :py:class:`Path <pathlib.PurePath>` object. If not given, the currently active version is used (as set by :func:`solcxir.set_solc_version <solcxir.set_solc_version>`)
